@@ -1,1 +1,30 @@
+workflows:
+  saran-ff-ios:
+    name: SARAN FF iOS
+    max_build_duration: 60
+    instance_type: mac_mini_m2
 
+    integrations:
+      app_store_connect: YOUR_APP_STORE_CONNECT_INTEGRATION
+
+    environment:
+      ios_signing:
+        distribution_type: development
+        bundle_identifier: com.saran.saranff
+      vars:
+        XCODE_PROJECT: "ThreeOneOSFive.xcodeproj"
+        XCODE_SCHEME: "ThreeOneOSFive"
+
+    scripts:
+      - name: Set up signing
+        script: |
+          xcode-project use-profiles
+
+      - name: Build clean app
+        script: |
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
